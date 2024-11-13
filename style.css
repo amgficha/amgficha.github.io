@@ -25,7 +25,7 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
 
-
+/* Estilos globales */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -135,32 +135,59 @@ footer {
 
 /* Media Queries para dispositivos móviles */
 @media (max-width: 768px) {
-    .form-group {
-        flex-direction: column;
+    /* Ajustar el tamaño del botón en móviles */
+    .btn-guardar {
+        font-size: 14px; /* Reducir el tamaño de la fuente */
+        padding: 10px 20px; /* Ajustar el espaciado */
     }
 
-    .form-group label,
-    .form-group input {
-        width: 100%;
-        margin: 0;
-        margin-bottom: 0.5rem;
-    }
-
-    .sesiones div {
-        flex: 1 1 100%;
-    }
-
-    h1, h2 {
-        font-size: 1.25rem;
-    }
-
-    header {
-        font-size: 1.25rem;
+    /* Ajustar la tabla en móviles */
+    table {
+        display: block;
+        overflow-x: auto; /* Permitir desplazamiento horizontal */
+        white-space: nowrap; /* Evitar que el contenido se ajuste automáticamente */
     }
 
     th, td {
         font-size: 0.875rem;
-        padding: 0.5rem;
+        padding: 0.4rem; /* Ajustar el padding */
     }
-    
+
+    /* Ajustes generales */
+    body {
+        padding: 10px; /* Reducir el padding general */
+    }
+
+    header, footer {
+        font-size: 1rem; /* Reducir el tamaño de las fuentes */
+        padding: 0.8rem; /* Ajustar el padding */
+    }
+
+    section {
+        padding: 0.8rem; /* Reducir el padding */
+    }
+
+    .form-group {
+        flex-direction: column; /* Apilar los elementos del formulario */
+        padding-bottom: 1rem; /* Añadir un pequeño espacio al final */
+    }
+
+    .form-group label,
+    .form-group input {
+        width: 100%; /* Hacer que los inputs ocupen todo el ancho disponible */
+        margin-bottom: 0.5rem; /* Añadir margen inferior para separación */
+    }
+
+    /* Reducir el tamaño de las fuentes para los títulos */
+    h2 {
+        font-size: 1.1rem;
+    }
+
+    h1, h2 {
+        font-size: 1rem; /* Ajustar el tamaño de los títulos */
+    }
+
+    .sesiones div {
+        flex: 1 1 100%; /* Asegurarse de que las sesiones ocupen el 100% del ancho */
+    }
 }

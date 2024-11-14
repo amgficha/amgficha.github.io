@@ -188,31 +188,31 @@
 
     <script>
         async function guardarPDF() {
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'pt', 'a4');
-            const nombreCliente = document.getElementById('nombre').value || "Cliente";
-            const fechaSesion = document.querySelector('[name="fecha"]').value || "Fecha";
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'pt', 'a4');
+    const nombreCliente = document.getElementById('nombre').value || "Cliente";
+    const fechaSesion = document.querySelector('[name="fecha"]').value || "Fecha";
 
-            // Captura todas las secciones en el PDF
-            const secciones = [
-                document.getElementById('ficha-completa') // Asegúrate de que esta sección exista
-            ];
+    // Captura todas las secciones en el PDF
+    const secciones = [
+        document.getElementById('ficha-completa') // Asegúrate de que esta sección exista
+    ];
 
-            const imgWidth = 595; // Ancho A4
-            const imgHeight = 842; // Altura A4
+    const imgWidth = 595; // Ancho A4 en puntos
+    const imgHeight = 842; // Altura A4 en puntos
 
-            for (let i = 0; i < secciones.length; i++) {
-                // Capturar la imagen de la sección
-                const canvas = await html2canvas(secciones[i], { scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
+    for (let i = 0; i < secciones.length; i++) {
+        // Capturar la imagen de la sección con una mayor escala
+        const canvas = await html2canvas(secciones[i], { scale: 3 }); // Aumenta la escala
+        const imgData = canvas.toDataURL('image/png');
 
-                if (i > 0) pdf.addPage(); // Solo agrega una nueva página si es necesario
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            }
+        if (i > 0) pdf.addPage(); // Solo agrega una nueva página si es necesario
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    }
 
-            // Guardar el PDF con el nombre generado
-            pdf.save(`${nombreCliente}_${fechaSesion}.pdf`);
-        }
+    // Guardar el PDF con el nombre generado
+    pdf.save(`${nombreCliente}_${fechaSesion}.pdf`);
+}
     </script>
 </body>
 </html>

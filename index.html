@@ -62,8 +62,6 @@
         </form>
     </section>
 
-
-
     <section class="datos-clinicos">
         <h2>Datos Clínicos</h2>
         <div class="checkbox-group">
@@ -82,7 +80,6 @@
             <label><input type="checkbox" name="alcohol"> Alcohol</label>
             <label><input type="checkbox" name="drogas"> Drogas</label>
             <label><input type="checkbox" name="marcapaso"> Disp. int, Marcapaso</label><br>
-            <!-- ...otros campos de checkbox... -->
         </div>
         <div class="datos-personales">
             <br>
@@ -99,18 +96,8 @@
         <table>
             <tr><th></th><th>Inicio</th><th>Medio</th><th>Final</th></tr>
             <tr><td>Cintura</td><td><input type="text" name="cintura_inicio"></td><td><input type="text" name="cintura_medio"></td><td><input type="text" name="cintura_final"></td></tr>
-            <tr>
-                <td>Busto</td>
-                <td><input type="text" name="busto_inicio"></td>
-                <td><input type="text" name="busto_medio"></td>
-                <td><input type="text" name="busto_final"></td>
-            </tr>
-            <tr>
-                <td>Cadera</td>
-                <td><input type="text" name="cadera_inicio"></td>
-                <td><input type="text" name="cadera_medio"></td>
-                <td><input type="text" name="cadera_final"></td>
-            </tr>
+            <tr><td>Busto</td><td><input type="text" name="busto_inicio"></td><td><input type="text" name="busto_medio"></td><td><input type="text" name="busto_final"></td></tr>
+            <tr><td>Cadera</td><td><input type="text" name="cadera_inicio"></td><td><input type="text" name="cadera_medio"></td><td><input type="text" name="cadera_final"></td></tr>
             <tr>
                 <td>Abdomen</td>
                 <td><input type="text" name="cintura_inicio"></td>
@@ -159,7 +146,6 @@
                 <td><input type="text" name="cintura_medio"></td>
                 <td><input type="text" name="cintura_final"></td>
             </tr>
-            <!-- ...otros campos de medidas... -->
         </table>
     </section>
 
@@ -168,7 +154,7 @@
         <div class="sesiones">
             <div>Sesión 1<br>Fecha: <input type="date" name="sesion1"></div>
             <div>Sesión 2<br>Fecha: <input type="date" name="sesion2"></div>
-            <div>Sesión 3<br>Fecha: <input type="date" name="sesion2"></div>
+            <div>Sesión 3<br>Fecha: <input type="date" name="sesion3"></div>
             <div>Sesión 4<br>Fecha: <input type="date" name="sesion3"></div>
             <div>Sesión 5<br>Fecha: <input type="date" name="sesion3"></div>
             <div>Sesión 6<br>Fecha: <input type="date" name="sesion3"></div>
@@ -176,7 +162,6 @@
             <div>Sesión 8<br>Fecha: <input type="date" name="sesion3"></div>
             <div>Sesión 9<br>Fecha: <input type="date" name="sesion3"></div>
             <div>Sesión 10<br>Fecha: <input type="date" name="sesion3"></div>
-            <!-- ...otras sesiones... -->
         </div>
     </section>
 
@@ -194,7 +179,6 @@
             <input type="text" name="firma">
         </div>
     </section>
-    <!-- Resto de secciones omitidas para brevedad -->
 
     <button class="btn-guardar" onclick="guardarPDF()">Guardar como PDF</button>
 
@@ -203,38 +187,30 @@
     </footer>
 
     <script>
-        function previewImage(event, elementId) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                const output = document.getElementById(elementId);
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
         async function guardarPDF() {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'pt', 'a4');
             const nombreCliente = document.getElementById('nombre').value || "Cliente";
             const fechaSesion = document.querySelector('[name="fecha"]').value || "Fecha";
 
-            // Capturar todas las secciones en el PDF
+            // Captura todas las secciones en el PDF
             const secciones = [
-                document.getElementById('ficha-completa'),
-                document.getElementById('seccion-antes-despues')
+                document.getElementById('ficha-completa') // Asegúrate de que esta sección exista
             ];
 
-            const imgWidth = 595; // ancho A4
-            const imgHeight = 842; // altura A4
+            const imgWidth = 595; // Ancho A4
+            const imgHeight = 842; // Altura A4
 
             for (let i = 0; i < secciones.length; i++) {
+                // Capturar la imagen de la sección
                 const canvas = await html2canvas(secciones[i], { scale: 2 });
                 const imgData = canvas.toDataURL('image/png');
 
-                if (i > 0) pdf.addPage();
+                if (i > 0) pdf.addPage(); // Solo agrega una nueva página si es necesario
                 pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
             }
 
+            // Guardar el PDF con el nombre generado
             pdf.save(`${nombreCliente}_${fechaSesion}.pdf`);
         }
     </script>

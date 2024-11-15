@@ -193,26 +193,25 @@
     const nombreCliente = document.getElementById('nombre').value || "Cliente";
     const fechaSesion = document.querySelector('[name="fecha"]').value || "Fecha";
 
-    // Captura todas las secciones en el PDF
     const secciones = [
-        document.getElementById('ficha-completa') // Asegúrate de que esta sección exista
+        document.getElementById('ficha-completa')
     ];
 
-    const imgWidth = 595; // Ancho A4 en puntos
-    const imgHeight = 842; // Altura A4 en puntos
+    const imgWidth = 595; 
+    const imgHeight = 842; 
 
     for (let i = 0; i < secciones.length; i++) {
-        // Capturar la imagen de la sección con una mayor escala
-        const canvas = await html2canvas(secciones[i], { scale: 3 }); // Aumenta la escala
-        const imgData = canvas.toDataURL('image/png');
+        const canvas = await html2canvas(secciones[i], { scale: 4 });
+        const imgData = canvas.toDataURL('image/jpeg', 0.8); // Usa JPEG y compresión de 80%
 
-        if (i > 0) pdf.addPage(); // Solo agrega una nueva página si es necesario
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
     }
 
-    // Guardar el PDF con el nombre generado
     pdf.save(`${nombreCliente}_${fechaSesion}.pdf`);
 }
+
+
     </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -8,13 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
-        body {
-    font-size: 1vw; /* Usa unidades relativas para mejorar la adaptabilidad */
-}
-header h1 {
-    font-size: 2em; /* Escala el tamaño de la fuente */
-}
-
         header {
             display: flex;
             justify-content: space-between;
@@ -31,6 +24,9 @@ header h1 {
             max-width: 100%;
             height: auto;
         }
+        section {
+            padding: 20px;
+        }
     </style>
 </head>
 <body id="ficha-completa">
@@ -39,6 +35,7 @@ header h1 {
         <img src="logo.jpg" alt="Logo AMG">
     </header>
 
+    <!-- Asignación de IDs únicos a cada sección -->
     <section class="info-contacto" id="seccion1">
         <h2>Información de Contacto</h2>
         <form>
@@ -69,7 +66,7 @@ header h1 {
         </form>
     </section>
 
-    <section class="datos-clinicos">
+    <section class="datos-clinicos" id="seccion2">
         <h2>Datos Clínicos</h2>
         <div class="checkbox-group">
             <label><input type="checkbox" name="cardiaca"> Enf. Cardíacas</label>
@@ -87,6 +84,7 @@ header h1 {
             <label><input type="checkbox" name="alcohol"> Alcohol</label>
             <label><input type="checkbox" name="drogas"> Drogas</label>
             <label><input type="checkbox" name="marcapaso"> Disp. int, Marcapaso</label><br>
+            <!-- Resto de los campos de verificación -->
         </div>
         <div class="datos-personales">
             <br>
@@ -98,7 +96,7 @@ header h1 {
         </div>
     </section>
 
-    <section class="medidas">
+    <section class="medidas" id="seccion3">
         <h2>Medidas</h2>
         <table>
             <tr><th></th><th>Inicio</th><th>Medio</th><th>Final</th></tr>
@@ -153,10 +151,11 @@ header h1 {
                 <td><input type="text" name="cintura_medio"></td>
                 <td><input type="text" name="cintura_final"></td>
             </tr>
+            <!-- Más filas de medidas -->
         </table>
     </section>
 
-    <section class="sesiones-programadas">
+    <section class="sesiones-programadas" id="seccion4">
         <h2>Sesiones Programadas</h2>
         <div class="sesiones">
             <div>Sesión 1<br>Fecha: <input type="date" name="sesion1"></div>
@@ -169,10 +168,11 @@ header h1 {
             <div>Sesión 8<br>Fecha: <input type="date" name="sesion3"></div>
             <div>Sesión 9<br>Fecha: <input type="date" name="sesion3"></div>
             <div>Sesión 10<br>Fecha: <input type="date" name="sesion3"></div>
+            <!-- Más sesiones según sea necesario -->
         </div>
     </section>
 
-    <section class="otros">
+    <section class="otros" id="seccion5">
         <div class="diagnostico">
             <h2>Diagnóstico y Tratamiento</h2>
             <textarea name="diagnostico"></textarea>
@@ -195,42 +195,33 @@ header h1 {
 
     <script>
         async function guardarPDF() {
-    const { jsPDF } = window.jspdf;
-    // Cambia las dimensiones del PDF para que sean más compatibles con pantallas de móviles
-    const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'pt',
-        format: [420, 595] // Un tamaño más pequeño que A4, para mejorar la visualización en móviles
-    });
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'pt', 'a4');
+            const nombreCliente = document.getElementById('nombre').value || "Cliente";
+            const fechaSesion = document.querySelector('[name="fecha"]').value || "Fecha";
 
-    const nombreCliente = document.getElementById('nombre').value || "Cliente";
-    const fechaSesion = document.querySelector('[name="fecha"]').value || "Fecha";
+            // IDs de cada sección que quieres capturar en páginas separadas
+            const sessionIds = ["seccion1", "seccion2", "seccion3", "seccion4", "seccion5"];
 
-    const secciones = [
-        document.getElementById('ficha-completa')
-    ];
+            const imgWidth = 595;
+            const imgHeight = 842;
 
-    const imgWidth = 420; // Ancho ajustado a una pantalla móvil
-    const imgHeight = 595;
+            for (let i = 0; i < sessionIds.length; i++) {
+                const sessionElement = document.getElementById(sessionIds[i]);
+                if (sessionElement) {
+                    const canvas = await html2canvas(sessionElement, { scale: 2 }); // Ajuste de escala para mejor resolución
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0); // Calidad máxima JPEG
 
-    for (let i = 0; i < secciones.length; i++) {
-        // Captura la imagen con una escala menor para reducir el tamaño
-        const canvas = await html2canvas(secciones[i], {
-            scale: 2, // Usa una escala menor para evitar que el contenido se vea demasiado grande
-            width: imgWidth // Establece un ancho específico
-        });
+                    if (i > 0) pdf.addPage();
+                    const imgAspectRatio = canvas.width / canvas.height;
+                    const canvasHeight = imgWidth / imgAspectRatio;
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.8); // Usa JPEG para compresión
+                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, canvasHeight);
+                }
+            }
 
-        if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-    }
-
-    pdf.save(`${nombreCliente}_${fechaSesion}.pdf`);
-}
-
-
-
+            pdf.save(`${nombreCliente}_${fechaSesion}.pdf`);
+        }
     </script>
 </body>
 </html>

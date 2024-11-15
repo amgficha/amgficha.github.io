@@ -8,6 +8,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
+        body {
+    font-size: 1vw; /* Usa unidades relativas para mejorar la adaptabilidad */
+}
+header h1 {
+    font-size: 2em; /* Escala el tamaño de la fuente */
+}
+
         header {
             display: flex;
             justify-content: space-between;
@@ -189,7 +196,13 @@
     <script>
         async function guardarPDF() {
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'pt', 'a4');
+    // Cambia las dimensiones del PDF para que sean más compatibles con pantallas de móviles
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: [420, 595] // Un tamaño más pequeño que A4, para mejorar la visualización en móviles
+    });
+
     const nombreCliente = document.getElementById('nombre').value || "Cliente";
     const fechaSesion = document.querySelector('[name="fecha"]').value || "Fecha";
 
@@ -197,12 +210,17 @@
         document.getElementById('ficha-completa')
     ];
 
-    const imgWidth = 595; 
-    const imgHeight = 842; 
+    const imgWidth = 420; // Ancho ajustado a una pantalla móvil
+    const imgHeight = 595;
 
     for (let i = 0; i < secciones.length; i++) {
-        const canvas = await html2canvas(secciones[i], { scale: 4 });
-        const imgData = canvas.toDataURL('image/jpeg', 0.8); // Usa JPEG y compresión de 80%
+        // Captura la imagen con una escala menor para reducir el tamaño
+        const canvas = await html2canvas(secciones[i], {
+            scale: 2, // Usa una escala menor para evitar que el contenido se vea demasiado grande
+            width: imgWidth // Establece un ancho específico
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.8); // Usa JPEG para compresión
 
         if (i > 0) pdf.addPage();
         pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
@@ -210,6 +228,7 @@
 
     pdf.save(`${nombreCliente}_${fechaSesion}.pdf`);
 }
+
 
 
     </script>
